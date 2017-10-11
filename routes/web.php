@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\PokerGameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,6 +12,22 @@
 |
 */
 
+Route::get('/example', function () {
+    return 'hello there!';
+});
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/', function () {
+    return PokerGameController::startGame();
+});
+
+Route::get('/', function () {
+    return PokerGameController::endGame();
+});
+
+Route::get('/example/{id}', function($title) {
+    return 'You have requested book #'.$title;
 });
