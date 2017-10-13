@@ -17,16 +17,12 @@ Route::get('/example', function () {
 });
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingPage');
 });
 
-Route::get('/', function () {
-    return PokerGameController::startGame();
-});
-
-Route::get('/', function () {
-    return PokerGameController::endGame();
-});
+#Route::get('/', function () {
+#    return PokerGameController::startGame();
+#});
 
 Route::get('/example/{id}', function($title) {
     return 'You have requested book #'.$title;
