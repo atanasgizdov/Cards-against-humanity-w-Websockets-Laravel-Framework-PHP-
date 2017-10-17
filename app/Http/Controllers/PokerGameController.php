@@ -6,13 +6,8 @@ use Illuminate\Http\Request;
 
 class PokerGameController extends Controller
 {
-  public static function startGame()
-  {
-    return 'Starting game...';
-  }
-
-  public static function endGame()
-  {
-    return 'Ending game...';
-  }
+  public function show()
+{
+  return view('pokerGame/show');
+}
 }

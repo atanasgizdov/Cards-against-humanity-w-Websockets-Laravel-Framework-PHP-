@@ -16,9 +16,8 @@ Route::get('/example', function () {
     return 'hello there!';
 });
 
-Route::get('/', function () {
-    return view('landingPage');
-});
+
+Route::get('/', 'PokerGameController@show');
 
 #Route::get('/', function () {
 #    return PokerGameController::startGame();
@@ -26,4 +25,12 @@ Route::get('/', function () {
 
 Route::get('/example/{id}', function($title) {
     return 'You have requested book #'.$title;
+});
+
+
+Route::get('/env', function () {
+    dump(config('app.name'));
+    dump(config('app.env'));
+    dump(config('app.debug'));
+    dump(config('app.url'));
 });
