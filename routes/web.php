@@ -1,5 +1,8 @@
 <?php
+
 use App\Http\Controllers\PokerGameController;
+use App\Http\Controllers\ChatServer;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +22,8 @@ Route::get('/example', function () {
 
 Route::get('/', 'PokerGameController@show');
 
-#Route::get('/', function () {
-#    return PokerGameController::startGame();
-#});
+#Route::get('/', 'ChatServer');
+
 
 Route::get('/example/{id}', function($title) {
     return 'You have requested book #'.$title;
