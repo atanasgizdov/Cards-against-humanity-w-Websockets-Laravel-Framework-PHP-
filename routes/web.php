@@ -20,7 +20,7 @@ Route::get('/example', function () {
 });
 
 
-Route::get('/', 'PokerGameController@show');
+Route::get('/', 'ChatServer@show');
 
 #Route::get('/', 'ChatServer');
 

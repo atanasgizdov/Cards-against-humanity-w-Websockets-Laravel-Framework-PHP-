@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\MessageInterface;
 
 class WebSocketController implements MessageComponentInterface {
+
   protected $clients;
 
   public function __construct() {
