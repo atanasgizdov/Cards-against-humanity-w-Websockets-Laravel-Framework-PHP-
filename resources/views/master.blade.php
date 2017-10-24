@@ -47,6 +47,8 @@
 		    @yield('content')
 	  </section>
 
+  </body>
+
     <!-- Footer -->
     <footer class="footer">
        <p>&copy; Atanas Gizdov 2017</p>

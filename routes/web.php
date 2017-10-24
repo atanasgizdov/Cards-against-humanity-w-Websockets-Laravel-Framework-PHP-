@@ -20,14 +20,14 @@ Route::get('/example', function () {
 });
 
 
-Route::get('/', 'ChatServer@show');
+#Route::get('/', 'PokerGameController@show');
 
-#Route::get('/', 'ChatServer');
+Route::get('/', 'PokerGameController@show');
 
+Route::get('/create', 'PokerGameController@createGameView');
 
-Route::get('/example/{id}', function($title) {
-    return 'You have requested book #'.$title;
-});
+Route::get('/play', 'PokerGameController@startGame');
+
 
 
 Route::get('/env', function () {

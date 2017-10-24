@@ -17,6 +17,7 @@ class WebSocketController implements MessageComponentInterface {
       // Store the new connection to send messages to later
       $this->clients->attach($conn);
 
+      echo '<script>console.log("New connection! ({$conn->resourceId})\n")</script>';
       echo "New connection! ({$conn->resourceId})\n";
   }
 
@@ -24,6 +25,8 @@ class WebSocketController implements MessageComponentInterface {
       $numRecv = count($this->clients) - 1;
       echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
           , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+
+      echo '<script>console.log($msg)</script>';    
 
       foreach ($this->clients as $client) {
           if ($from !== $client) {

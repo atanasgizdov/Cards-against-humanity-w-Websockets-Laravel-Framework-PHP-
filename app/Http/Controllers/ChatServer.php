@@ -8,7 +8,8 @@ use App\Http\Controllers\WebSocketController;
 $server = null;
 
     require '../vendor/autoload.php';
-    
+
+
 
     $server = IoServer::factory(
          new HttpServer(
@@ -16,7 +17,7 @@ $server = null;
                  new WebSocketController()
              )
          ),
-         8008
+         8080
      );
      $server->loop->stop();
      $server->run();
