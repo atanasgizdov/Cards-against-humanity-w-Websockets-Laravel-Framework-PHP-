@@ -20,9 +20,13 @@ public function startGame(Request $request){
 
   $title = $request->input('title');
   $session = 1234;
-  #include('ChatServer.php');
+  include('ChatServer.php');
   return view ('pokerGame/admin');
 
+}
+
+public function joinGame(){
+  return view ('pokerGame/admin');
 }
 
 }
