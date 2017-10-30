@@ -26,7 +26,7 @@ public function startGame(Request $request){
 }
 
 public function joinGame(){
-  return view ('pokerGame/admin');
+  return view ('pokerGame/player');
 }
 
 }
