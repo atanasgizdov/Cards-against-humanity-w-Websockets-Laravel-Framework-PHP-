@@ -7,26 +7,51 @@ use Ratchet\ConnectionInterface;
 
 class WebSocketController implements MessageComponentInterface {
 
-  protected $clients;
+    protected $clients;
+    private $logs;
+    private $connectedUsers;
+    private $connectedUsersNames;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
+      $this->logs = [];
+      $this->connectedUsers = [];
+      $this->connectedUsersNames = [];
   }
 
   public function onOpen(ConnectionInterface $conn) {
       // Store the new connection to send messages to later
       $this->clients->attach($conn);
 
-      echo '<script>console.log("New connection! ({$conn->resourceId})\n")</script>';
       echo "New connection! ({$conn->resourceId})\n";
+      $conn->send(json_encode($this->logs));
+      $this->connectedUsers [$conn->resourceId] = $conn;
+      $this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
+      $conn->send(json_encode($this->connectedUsersNames));
   }
 
   public function onMessage(ConnectionInterface $from, $msg) {
+       // Do we have a username for this user yet?
+       if (isset($this->connectedUsersNames[$from->resourceId])) {
+           // If we do, append to the chat logs their message
+           $this->logs[] = array(
+               "user" => $this->connectedUsersNames[$from->resourceId],
+               "msg" => $msg,
+               "timestamp" => time()
+           );
+           $this->sendMessage(end($this->logs));
+
+       } else {
+           // If we don't this message will be their username
+           $this->connectedUsersNames[$from->resourceId] = "Unknown Player";
+       }
+   }
+
+/*  public function onMessage(ConnectionInterface $from, $msg) {
       $numRecv = count($this->clients) - 1;
       echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
           , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
-      echo '<script>console.log($msg)</script>';    
 
       foreach ($this->clients as $client) {
           if ($from !== $client) {
@@ -35,11 +60,13 @@ class WebSocketController implements MessageComponentInterface {
           }
       }
   }
+  */
 
   public function onClose(ConnectionInterface $conn) {
       // The connection is closed, remove it, as we can no longer send it messages
       $this->clients->detach($conn);
-
+      unset($this->connectedUsersNames[$conn->resourceId]);
+      unset($this->connectedUsers[$conn->resourceId]);
       echo "Connection {$conn->resourceId} has disconnected\n";
   }
 
@@ -48,4 +75,15 @@ class WebSocketController implements MessageComponentInterface {
 
       $conn->close();
   }
+
+  private function sendMessage($message) {
+        foreach ($this->connectedUsers as $user) {
+            $user->send(json_encode($message));
+        }
+    }
+
+  private function sendPlayers() {
+          send(json_encode($this->connectedUsersNames));
+          }
+
 }
