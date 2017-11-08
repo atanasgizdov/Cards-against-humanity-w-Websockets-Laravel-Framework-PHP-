@@ -1,0 +1,16 @@
+$ php artisan make:migration add_page_count_field_to_books_table
+In the resulting migration, your up method would look something like this:
+
+public function up() {
+    Schema::table('books', function (Blueprint $table) {
+        $table->integer('page_count');
+    });
+}
+And your down method would look something like this:
+
+public function down() {
+    Schema::table('books', function (Blueprint $table) {
+        $table->dropColumn('page_count');
+    });
+}
+When you next run php artisan migrate, it would recognize this new migration that has not been run, and it would run it, altering your books table.
