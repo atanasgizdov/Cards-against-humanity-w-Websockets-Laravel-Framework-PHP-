@@ -9,9 +9,14 @@
 
 <h2> Planning Poker: You are currently in game:  </h2>
 <br>
+
+<div id = "playersTable">
+
+</div>
+
 <div class="table">
 
-  <div class="card" onclick="markCardAsSelected(1)">
+  <div class="card" onclick="markCardAsSelected(0)">
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
     <div class="container">
       <h4><b>Vote 1</b></h4>
@@ -21,7 +26,7 @@
 
   <br>
 
-  <div class="card" onclick="markCardAsSelected(2)">
+  <div class="card" onclick="markCardAsSelected(1)">
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
     <div class="container">
       <h4><b>Vote 2</b></h4>
@@ -31,7 +36,7 @@
 
   <br>
 
-  <div class="card" onclick="markCardAsSelected(3)">
+  <div class="card" onclick="markCardAsSelected(2)">
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
     <div class="container">
       <h4><b>Vote 3</b></h4>
@@ -41,7 +46,7 @@
 
   <br>
 
-  <div class="card" onclick="markCardAsSelected(5)">
+  <div class="card" onclick="markCardAsSelected(3)">
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
     <div class="container">
       <h4><b>Vote 5</b></h4>
@@ -51,7 +56,7 @@
 
   <br>
 
-  <div class="card" onclick="markCardAsSelected(8)">
+  <div class="card" onclick="markCardAsSelected(4)">
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
     <div class="container">
       <h4><b>Vote 8</b></h4>
