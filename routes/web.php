@@ -43,6 +43,9 @@ Route::get('/env', function () {
 
 Route::get('/debug', function () {
 
+    $query = DB::table('cards')->where('card_id', '1')->first();
+    dump($query);
+
     $debug = [
         'Environment' => App::environment(),
         'Database defaultStringLength' => Illuminate\Database\Schema\Builder::$defaultStringLength,

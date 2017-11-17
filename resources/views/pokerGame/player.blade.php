@@ -77,11 +77,18 @@
 @section('js')
 
 <script>
+
+window.onload = function() {
+  connectToSocket();
+};
+  var data;
   var conn = new WebSocket('ws://localhost:8080');
   conn.onopen = function(e) {
   console.log("Connection established!");
+
   conn.onmessage = function(e) {
-  console.log(e.data);
+  var data = JSON.parse(e.data);
+  console.log(data);
 };
 };
 </script>

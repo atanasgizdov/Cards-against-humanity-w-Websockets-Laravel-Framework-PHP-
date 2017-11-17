@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Illuminate\Support\Facades\DB;
 
 class WebSocketController implements MessageComponentInterface {
 
@@ -11,6 +12,7 @@ class WebSocketController implements MessageComponentInterface {
     private $logs;
     private $connectedUsers;
     private $connectedUsersNames;
+    # private $query;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
@@ -24,7 +26,7 @@ class WebSocketController implements MessageComponentInterface {
       $this->clients->attach($conn);
 
       echo "New connection! ({$conn->resourceId})\n";
-      $conn->send(json_encode($this->logs));
+      #$conn->send(json_encode($this->logs));
       $this->connectedUsers [$conn->resourceId] = $conn;
       $this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
       $conn->send(json_encode($this->connectedUsersNames));
@@ -34,9 +36,11 @@ class WebSocketController implements MessageComponentInterface {
        // Do we have a username for this user yet?
        if (isset($this->connectedUsersNames[$from->resourceId])) {
            // If we do, append to the chat logs their message
+
            $this->logs[] = array(
                "user" => $this->connectedUsersNames[$from->resourceId],
                "msg" => $msg,
+               "queryresult" => $this->dbResults($msg),
                "timestamp" => time()
            );
            $this->sendMessage(end($this->logs));
@@ -82,8 +86,9 @@ class WebSocketController implements MessageComponentInterface {
         }
     }
 
-  private function sendPlayers() {
-          send(json_encode($this->connectedUsersNames));
-          }
+  private function dbResults($message) {
+          $query = DB::table('cards')->where('card_id', $message)->first();
+          return $query;
+      }
 
 }
