@@ -8,15 +8,24 @@ var messageData;
 //set on connect actions
 conn.onopen = function(e) {
 console.log("Connection established!");
-playersConnected = e.data;
-console.log(playersConnected);
 };
-
 
 //on message received
 conn.onmessage = function(e) {
 messageData = JSON.parse(e.data);
 logMessage();
+
+Object.keys(messageData).forEach(function(k){
+		var iDiv = document.createElement('div');
+		iDiv.id = k;
+		iDiv.className = 'card';
+		document.getElementsByTagName('body')[0].appendChild(iDiv);
+
+		iDiv.innerHTML = messageData[k];
+
+    //Object.keys(obj).forEach(function(k, v){
+    //console.log(k + ' - ' + v);
+});
 };
 
 function logMessage(){

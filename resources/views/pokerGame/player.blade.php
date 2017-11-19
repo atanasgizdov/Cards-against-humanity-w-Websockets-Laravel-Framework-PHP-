@@ -10,10 +10,6 @@
 <h2> Planning Poker: You are currently in game:  </h2>
 <br>
 
-<div id = "playersTable">
-
-</div>
-
 <div class="table">
 
   <div class="card" onclick="markCardAsSelected(0)">
@@ -76,21 +72,6 @@
 
 @section('js')
 
-<script>
-
-window.onload = function() {
-  connectToSocket();
-};
-  var data;
-  var conn = new WebSocket('ws://localhost:8080');
-  conn.onopen = function(e) {
-  console.log("Connection established!");
-
-  conn.onmessage = function(e) {
-  var data = JSON.parse(e.data);
-  console.log(data);
-};
-};
-</script>
+<script type="text/javascript" src="{{ URL::asset('js/custom.js') }}"></script>
 
 @endsection

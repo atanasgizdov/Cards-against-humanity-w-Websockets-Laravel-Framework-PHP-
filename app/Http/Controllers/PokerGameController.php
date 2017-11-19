@@ -19,15 +19,22 @@ public function createGameView(){
 public function startGame(Request $request){
 
   $title = $request->input('title');
-  $session = 1234;
   // To be used when first firing up the Web Server. Once it's spinning, this can be commented out
   include('ChatServer.php');
   return view ('pokerGame/admin');
 
 }
 
+public function enterName(){
+  return view ('pokerGame/enterName');
+}
+
 public function joinGame(){
   return view ('pokerGame/player');
+}
+
+public function admin(){
+  return view ('pokerGame/admin');
 }
 
 }

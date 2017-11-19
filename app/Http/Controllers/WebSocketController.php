@@ -12,7 +12,6 @@ class WebSocketController implements MessageComponentInterface {
     private $logs;
     private $connectedUsers;
     private $connectedUsersNames;
-    # private $query;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
@@ -24,11 +23,12 @@ class WebSocketController implements MessageComponentInterface {
   public function onOpen(ConnectionInterface $conn) {
       // Store the new connection to send messages to later
       $this->clients->attach($conn);
+      dump($conn);
 
       echo "New connection! ({$conn->resourceId})\n";
       #$conn->send(json_encode($this->logs));
       $this->connectedUsers [$conn->resourceId] = $conn;
-      $this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
+      //$this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
       $conn->send(json_encode($this->connectedUsersNames));
   }
 
@@ -47,7 +47,7 @@ class WebSocketController implements MessageComponentInterface {
 
        } else {
            // If we don't this message will be their username
-           $this->connectedUsersNames[$from->resourceId] = "Unknown Player";
+           $this->connectedUsersNames[$from->resourceId] = $msg;
        }
    }
 

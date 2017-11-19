@@ -13,8 +13,14 @@
   <span style="width:100%"> Player 1 </span>
   <div class="container">
     <h4><b>John Doe</b></h4>
-    <p>Architect &amp Engineer</p>
+    <p>Architect Engineer</p>
   </div>
 </div>
+
+@endsection
+
+@section('js')
+
+<script type="text/javascript" src="{{ URL::asset('js/admin.js') }}"></script>
 
 @endsection
