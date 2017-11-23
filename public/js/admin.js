@@ -19,9 +19,9 @@ Object.keys(messageData).forEach(function(k){
 		var iDiv = document.createElement('div');
 		iDiv.id = k;
 		iDiv.className = 'card';
-		document.getElementsByTagName('body')[0].appendChild(iDiv);
+		document.getElementsByClassName('cards')[0].appendChild(iDiv);
 
-		iDiv.innerHTML = messageData[k];
+		iDiv.innerHTML = "Another scrub has joined the game: <br>" + messageData[k];
 
     //Object.keys(obj).forEach(function(k, v){
     //console.log(k + ' - ' + v);
@@ -32,7 +32,6 @@ function logMessage(){
   console.log(messageData);
 }
 
-//TODO Parse JSON and create a table of players
 //TODO Add a popup window that captures real player names and associates them with ID // http://jsfiddle.net/M5PXE/2/
 
 function markCardAsSelected(card) {

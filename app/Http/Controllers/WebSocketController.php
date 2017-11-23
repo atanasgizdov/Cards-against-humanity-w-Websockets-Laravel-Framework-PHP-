@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\PlayerClass;
 
 class WebSocketController implements MessageComponentInterface {
 
@@ -12,22 +13,26 @@ class WebSocketController implements MessageComponentInterface {
     private $logs;
     private $connectedUsers;
     private $connectedUsersNames;
+    private $connectedUsersObjects;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
       $this->logs = [];
       $this->connectedUsers = [];
       $this->connectedUsersNames = [];
+      $this->connectedUsersObjects = [];
   }
 
   public function onOpen(ConnectionInterface $conn) {
       // Store the new connection to send messages to later
       $this->clients->attach($conn);
-      dump($conn);
-
+      //dump($conn);
       echo "New connection! ({$conn->resourceId})\n";
       #$conn->send(json_encode($this->logs));
       $this->connectedUsers [$conn->resourceId] = $conn;
+      // instantiate new player object
+      $this->connectedUsersObjects [$conn->resourceId] = new Player ($conn->resourceId);
+      dump($this->connectedUsersObjects);
       //$this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
       $conn->send(json_encode($this->connectedUsersNames));
   }
@@ -35,19 +40,27 @@ class WebSocketController implements MessageComponentInterface {
   public function onMessage(ConnectionInterface $from, $msg) {
        // Do we have a username for this user yet?
        if (isset($this->connectedUsersNames[$from->resourceId])) {
-           // If we do, append to the chat logs their message
+           // If we do, build JSON based on request
 
-           $this->logs[] = array(
-               "user" => $this->connectedUsersNames[$from->resourceId],
-               "msg" => $msg,
-               "queryresult" => $this->dbResults($msg),
-               "timestamp" => time()
-           );
-           $this->sendMessage(end($this->logs));
+           //TODO separate out json building into methods based on JS input
+           //TODO figure out way to determine request type passed from JS
+
+
+           $this->buildBulkMessage($from, $msg);
+
 
        } else {
            // If we don't this message will be their username
            $this->connectedUsersNames[$from->resourceId] = $msg;
+           // loop through each connected users object to find if object matching UN exists - if so, update UN
+           foreach ($this->connectedUsersObjects as $user) {
+               if ($user->getPlayerId() == $from->resourceId ) {
+                    $user->updateUserName($msg);
+               }
+           }
+           dump($this->connectedUsersObjects);
+
+
        }
    }
 
@@ -80,15 +93,43 @@ class WebSocketController implements MessageComponentInterface {
       $conn->close();
   }
 
-  private function sendMessage($message) {
-        foreach ($this->connectedUsers as $user) {
-            $user->send(json_encode($message));
-        }
-    }
+ // based on message passed and from whom, build a generic message to return as a JSON object
 
+ private function buildBulkMessage ($from, $msg) {
+   $this->logs[] = array(
+       "user" => $this->connectedUsersNames[$from->resourceId],
+       "msg" => $msg,
+       "queryresult" => $this->dbResults($msg),
+       "timestamp" => time()
+   );
+   $this->sendBulkMessage(end($this->logs));
+ }
+
+ private function buildRandomCards ($from, $msg) {
+   $this->personalLogs[] = array(
+       "user" => $this->connectedUsersNames[$from->resourceId],
+       "msg" => $msg,
+       "queryresult" => $this->dbResults($msg),
+       "timestamp" => time()
+   );
+   $this->sendSingleMessage(end($this->personalLogs));
+ }
+
+// query database for card with id passed
   private function dbResults($message) {
           $query = DB::table('cards')->where('card_id', $message)->first();
           return $query;
       }
+
+      // send message as JSON to all socket users, based on message passed
+        private function sendBulkMessage($message) {
+              foreach ($this->connectedUsers as $user) {
+                  $user->send(json_encode($message));
+              }
+          }
+
+        private function sendSingleMessage($mesage) {
+          $this->connectedUsers->send(json_encode($message));
+        }
 
 }
