@@ -14,7 +14,7 @@ console.log("Connection established!");
 conn.onmessage = function(e) {
 messageData = JSON.parse(e.data);
 logMessage();
-
+conn.send("admin");
 Object.keys(messageData).forEach(function(k){
 		var iDiv = document.createElement('div');
 		iDiv.id = k;
