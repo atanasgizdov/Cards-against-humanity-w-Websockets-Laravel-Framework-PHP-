@@ -6,6 +6,7 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\PlayerClass;
+use Psy\CodeCleaner\PassableByReferencePass;
 
 class WebSocketController implements MessageComponentInterface {
 
@@ -23,6 +24,12 @@ class WebSocketController implements MessageComponentInterface {
       $this->connectedUsersObjects = [];
   }
 
+  /* Dictionary for all commands coming from the websocket as a message
+
+  1 - Request for List of Players
+
+  */
+
   public function onOpen(ConnectionInterface $conn) {
       // Store the new connection to send messages to later
       $this->clients->attach($conn);
@@ -35,24 +42,28 @@ class WebSocketController implements MessageComponentInterface {
       $this->connectedUsersObjects [$conn->resourceId] = new Player ($conn->resourceId);
       dump($this->connectedUsersObjects);
       //$this->connectedUsersNames[$conn->resourceId] = $conn->resourceId;
-      $conn->send(json_encode($this->connectedUsersNames));
+      //$conn->send(json_encode($this->connectedUsersNames));
   }
 
   public function onMessage(ConnectionInterface $from, $msg) {
-       // Do we have a username for this user yet?
+       // Do we have a username for this user yet? New players won't so first message received sets this
        if (isset($this->connectedUsersNames[$from->resourceId])) {
            // If we do, build JSON based on request
 
            //TODO separate out json building into methods based on JS input
-           //TODO figure out way to determine request type passed from JS
+
+           // receieve msg code 1 - request for list of current players - this is based on current objects
+           if ($msg == 1){
+              $this->sendListOfPlayers($from);
+            }
 
 
-           $this->buildBulkMessage($from, $msg);
-           $this->buildSingleMessage($from, $msg);
+           //$this->buildBulkMessage($from, $msg);
+           //$this->buildSingleMessage($from, $msg);
 
 
        } else {
-           // If we don't this message will be their username
+           // If we don't this message will be their username - update connectedUsersNames array
            $this->connectedUsersNames[$from->resourceId] = $msg;
            // loop through each connected users object to find if object matching UN exists - if so, update UN
            foreach ($this->connectedUsersObjects as $user) {
@@ -123,6 +134,16 @@ private function buildSingleMessage ($from, $msg) {
              $user->send(json_encode($message));
          }
      }
+
+  // send list of current players
+
+  private function sendListOfPlayers ($from) {
+    $this->logs[] = array(
+        "msg" => $this->connectedUsersNames
+    );
+
+    $this->sendSingleMessage($from, end($this->logs));
+  }
 
 // query database for card info, based on the id passed from JS - usually on card click
   private function dbResults($message) {
