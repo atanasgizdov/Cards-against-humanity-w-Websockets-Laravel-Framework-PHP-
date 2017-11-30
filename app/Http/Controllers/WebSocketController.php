@@ -48,7 +48,7 @@ class WebSocketController implements MessageComponentInterface {
 
 
            $this->buildBulkMessage($from, $msg);
-           //$this->buildSingleMessage($from, $msg);
+           $this->buildSingleMessage($from, $msg);
 
 
        } else {
@@ -87,16 +87,22 @@ class WebSocketController implements MessageComponentInterface {
 // based on message passed and from whom, build a generic message to return as a JSON object - call function to send to single player
 
 private function buildSingleMessage ($from, $msg) {
-   $this->sendSingleMessage($from, "private hello");
+  $this->logs[] = array(
+      "user" => $this->connectedUsersNames[$from->resourceId],
+      "msg" => $msg,
+      "queryresult" => $this->dbResults($msg),
+      "timestamp" => time()
+  );
+  $this->sendSingleMessage($from, end($this->logs));
 }
 
 // send message as JSON to just user who sent it, based on message passed
   private function sendSingleMessage($from, $message) {
-        foreach ($this->connectedUsersObjects as $user) {
-          if ($user->getPlayerId() == $from->resourceId ) {
+     foreach ($this->connectedUsers as $user) {
+        if ($from->resourceId == $user->resourceId) {
              $user->send(json_encode($message));
-          }
         }
+     }
 }
 
  // based on message passed and from whom, build a generic message to return as a JSON object - call function to send to ALL players
