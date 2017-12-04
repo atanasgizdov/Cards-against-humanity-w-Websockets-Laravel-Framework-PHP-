@@ -20,27 +20,10 @@ class Player extends Controller
 
 }
 
+// object manipulators
+
 public function getPlayerId () {
    return $this->playerId;
-}
-
-public function getPlayerCards () {
-  return $this->playerCards;
-}
-
-private function generateRandomCards () {
-    $randomCards = DB::table('cards')->where('card_type', 'white')->inRandomOrder()->limit(5)->get();
-       foreach ($randomCards as $card) {
-         array_push($this->playerCards, $card);
-       }
-}
-
-public function addRandomCardToHand () {
-
-}
-
-public function getPlayerBlackCards() {
-  return $this->blackCardsWon;
 }
 
 public function getUserName () {
@@ -49,6 +32,29 @@ public function getUserName () {
 
 public function updateUserName ($username) {
   $this->userName = $username;
+}
+
+// card manipulators
+
+public function getPlayerWhiteCards () {
+  return $this->playerCards;
+}
+
+public function getPlayerBlackCards() {
+  return $this->blackCardsWon;
+}
+
+public function addRandomCardToHand () {
+
+}
+
+// db interactions & private methods
+
+private function generateRandomCards () {
+    $randomCards = DB::table('cards')->where('card_type', 'white')->inRandomOrder()->limit(5)->get();
+       foreach ($randomCards as $card) {
+         array_push($this->playerCards, $card);
+       }
 }
 
 }

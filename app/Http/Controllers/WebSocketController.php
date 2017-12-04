@@ -50,12 +50,16 @@ class WebSocketController implements MessageComponentInterface {
        if (isset($this->connectedUsersNames[$from->resourceId])) {
            // If we do, build JSON based on request
 
-           //TODO separate out json building into methods based on JS input
-
            // receieve msg code 1 - request for list of current players - this is based on current objects
            if ($msg == 1){
               $this->sendListOfPlayers($from);
             }
+
+            // player wants to draw white cards
+
+           if ($msg == 2) {
+              $this->sendListOfWhiteCards($from);
+           }
 
 
            //$this->buildBulkMessage($from, $msg);
@@ -139,11 +143,30 @@ private function buildSingleMessage ($from, $msg) {
 
   private function sendListOfPlayers ($from) {
     $this->logs[] = array(
+        "response_code" => "1",
         "msg" => $this->connectedUsersNames
     );
 
+    $this->sendBulkMessage(end($this->logs));
+  }
+
+  // send the list of cards currently in the player's hand as JSON
+
+  private function sendListOfWhiteCards ($from) {
+    $playerCards;
+    foreach ($this->connectedUsersObjects as $user) {
+        if ($user->getPlayerId() == $from->resourceId ) {
+            $playerCards = $user->getPlayerWhiteCards();
+        }
+    }
+
+    $this->logs[] = array(
+        "response_code" => "2",
+        "msg" => $playerCards
+    );
     $this->sendSingleMessage($from, end($this->logs));
   }
+
 
 // query database for card info, based on the id passed from JS - usually on card click
   private function dbResults($message) {

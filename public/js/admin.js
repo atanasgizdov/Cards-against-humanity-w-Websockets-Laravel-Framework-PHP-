@@ -10,22 +10,29 @@ conn.onopen = function(e) {
 console.log("Connection established!");
 };
 
-//on message received
+//on message received - driven by "response codes" sent back from server
 conn.onmessage = function(e) {
 messageData = JSON.parse(e.data);
-logMessage();
+		// received a list of players currently in the game
+		if (messageData.response_code == "1"){
+		logMessage();
+				//TODO drop existing cards, if any
 
-Object.keys(messageData["msg"]).forEach(function(k){
-		var iDiv = document.createElement('div');
-		iDiv.id = k;
-		iDiv.className = 'card';
-		document.getElementsByClassName('cards')[0].appendChild(iDiv);
+				Object.keys(messageData.msg).forEach(function(k){
+						var iDiv = document.createElement('div');
+						var playerKey = k;
+						var playerName = messageData.msg[k];
+						iDiv.id = k;
+						iDiv.className = 'card';
+						document.getElementsByClassName('cards')[0].appendChild(iDiv);
 
-		iDiv.innerHTML = "Another scrub has joined the game: <br>" + messageData[k];
+						iDiv.innerHTML = "Another scrub has joined the game: <br>" + playerName;
 
-    //Object.keys(obj).forEach(function(k, v){
-    //console.log(k + ' - ' + v);
-});
+				    //Object.keys(obj).forEach(function(k, v){
+				    //console.log(k + ' - ' + v);
+				});
+
+		}
 };
 
 function logMessage(){
