@@ -4,12 +4,12 @@ var conn = new WebSocket('ws://localhost:8080');
 
 var playersConnected;
 var messageData;
+var nameSet = false;
 
 //set on connect actions
 conn.onopen = function(e) {
 console.log("Connection established!");
 };
-
 
 //on message received - driven by "response codes" sent back from server
 conn.onmessage = function(e) {
@@ -36,22 +36,44 @@ messageData = JSON.parse(e.data);
 		logMessage();
 
 				 Object.keys(messageData['msg']).forEach(function(k){
-						var iDiv = document.createElement('div');
-						iDiv.id = messageData['msg'][k]['card_id'];
-						iDiv.className = 'card';
-						document.getElementsByClassName('cards')[0].appendChild(iDiv);
 
-						iDiv.innerHTML = messageData['msg'][k]['text'];
+           // create dom elements for each card
+            var linebreak = document.createElement("br");
+						var iDiv = document.createElement('div');
+            var iDiv2 = document.createElement('div');
+            var iDiv3 = document.createElement('div');
+            var card_img = document.createElement("img");
+
+            //set id's for card div - this is the ID of the card rendered
+						iDiv.id = messageData['msg'][k]['card_id'];
+
+            //add onclick
+            iDiv.onclick = logMessage;
+
+            //set class
+            iDiv.className = 'card';
+            card_img.className = 'card';
+
+            //set content
+            card_img.setAttribute("src", "https://pbs.twimg.com/profile_images/923599161940955136/KtK4rkf1.jpg");
+            iDiv2.innerHTML = messageData['msg'][k]['title'];
+            iDiv3.innerHTML = messageData['msg'][k]['text'];
+
+            iDiv.appendChild(card_img);
+            iDiv2.appendChild(iDiv3);
+            iDiv.appendChild(iDiv2);
+            document.getElementsByClassName('cards')[0].appendChild(iDiv);
+            document.getElementsByClassName('cards')[0].appendChild(linebreak);
+
 				});
 
 		}
 };
 
+//debugger
 function logMessage(){
   console.log(messageData);
 }
-
-//TODO Add a popup window that captures real player names and associates them with ID // http://jsfiddle.net/M5PXE/2/
 
 function markCardAsSelected(card) {
 
@@ -67,4 +89,19 @@ function markCardAsSelected(card) {
     //add highlight to current card
     cardsArray[card].style.boxShadow = "10px 20px 30px lightgreen";
 
+}
+
+// misc JS for manipulating page
+
+// load modal on load so that player enters name
+$(window).on('load',function(){
+    $('#myModal').modal('show');
+});
+
+// updates UserName, based on entry from modal
+function sendUserName(){
+  var playerName_UIOnly = $('#user_name_ui').val();
+  document.getElementById('user_name_ui_show').innerHTML = playerName_UIOnly;
+  conn.send(playerName_UIOnly);
+  nameSet = true;
 }

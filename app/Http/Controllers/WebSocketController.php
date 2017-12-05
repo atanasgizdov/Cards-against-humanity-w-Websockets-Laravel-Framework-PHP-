@@ -24,9 +24,14 @@ class WebSocketController implements MessageComponentInterface {
       $this->connectedUsersObjects = [];
   }
 
+  //TODO add an array to track cards already played so it doens't return the same ones when user draws
+  
+  //TODO expand interface to feature multiple rooms and id's
+
   /* Dictionary for all commands coming from the websocket as a message
 
   1 - Request for List of Players
+  2 - Request white cards for player
 
   */
 

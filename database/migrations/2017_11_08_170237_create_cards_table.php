@@ -14,17 +14,13 @@ class CreateCardsTable extends Migration
     public function up()
     {
         Schema::create('cards', function (Blueprint $table) {
-            $table->increments('card_id');
+            $table->increments('id');
             $table->timestamps();
-
-            $table->string('card_type');
             $table->string('title');
             $table->string('text');
-            $table->bigInteger('times_played');
-            $table->bigInteger('times_voted_for');
-            $table->boolean('played_this_game');
-
-
+            $table->bigInteger('times_played_lifetime');
+            $table->bigInteger('times_voted_for_lifetime');
+            $table->integer('active');
         });
     }
 
