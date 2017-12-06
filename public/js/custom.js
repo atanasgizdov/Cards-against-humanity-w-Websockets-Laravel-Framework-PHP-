@@ -35,6 +35,10 @@ messageData = JSON.parse(e.data);
 		if (messageData.response_code == "2"){
 		logMessage();
 
+      // destroy existing dom cards, if any
+      removeChildren (document.getElementsByClassName('cards')[0]);
+
+          // for each card object returned
 				 Object.keys(messageData['msg']).forEach(function(k){
 
            // create dom elements for each card
@@ -48,7 +52,9 @@ messageData = JSON.parse(e.data);
 						iDiv.id = messageData['msg'][k]['card_id'];
 
             //add onclick
-            iDiv.onclick = logMessage;
+            //iDiv.onclick = logMessage;
+            iDiv.onclick = function() {logMessage("test");};
+            //iDiv.onclick = function() {markCardAsSelected(iDiv.id);};
 
             //set class
             iDiv.className = 'card';
@@ -70,11 +76,16 @@ messageData = JSON.parse(e.data);
 		}
 };
 
-//debugger
+//debuggers
 function logMessage(){
   console.log(messageData);
 }
 
+function logMessage(msg){
+  console.log(msg);
+}
+
+// sends card id to server + stlying for selected card
 function markCardAsSelected(card) {
 
     //send server message card was selected
@@ -104,4 +115,12 @@ function sendUserName(){
   document.getElementById('user_name_ui_show').innerHTML = playerName_UIOnly;
   conn.send(playerName_UIOnly);
   nameSet = true;
+}
+
+// remove children nodes from current element
+
+function removeChildren (div) {
+  while (div.hasChildNodes()) {
+    div.removeChild(div.lastChild);
+  }
 }

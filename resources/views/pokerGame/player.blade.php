@@ -43,6 +43,12 @@
 
 <br>
 
+<div class="black_cards">
+
+</div>
+
+<br>
+
 <div class="cards">
 
 </div>

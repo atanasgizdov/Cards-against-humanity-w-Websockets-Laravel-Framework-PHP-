@@ -51,10 +51,22 @@ public function addRandomCardToHand () {
 // db interactions & private methods
 
 private function generateRandomCards () {
-    $randomCards = DB::table('cards')->where('card_type', 'white')->inRandomOrder()->limit(5)->get();
+  $randomCards = DB::table('cards')
+            ->join('cards_cardtypes', 'cards.id', '=', 'cards_cardtypes.cards_id')
+            ->join('cardtypes', 'cardtypes.id', '=', 'cards_cardtypes.cardtypes_id')
+            ->select('cards_id','title', 'text' , 'active')
+            ->where('cardtypes_id', '1')
+            ->inRandomOrder()
+            ->limit(5)
+            ->get();
        foreach ($randomCards as $card) {
          array_push($this->playerCards, $card);
        }
+}
+
+public function practice()
+{
+
 }
 
 }
