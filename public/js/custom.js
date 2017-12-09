@@ -17,7 +17,6 @@ messageData = JSON.parse(e.data);
     // received a list of players currently in the game
     if (messageData.response_code == "1"){
     logMessage();
-        //TODO drop existing cards, if any
 
         Object.keys(messageData.msg).forEach(function(k){
             var iDiv = document.createElement('div');
@@ -49,12 +48,12 @@ messageData = JSON.parse(e.data);
             var card_img = document.createElement("img");
 
             //set id's for card div - this is the ID of the card rendered
-						iDiv.id = messageData['msg'][k]['card_id'];
+						iDiv.id = messageData['msg'][k]['cards_id'];
 
             //add onclick
             //iDiv.onclick = logMessage;
-            iDiv.onclick = function() {logMessage("test");};
-            //iDiv.onclick = function() {markCardAsSelected(iDiv.id);};
+            //iDiv.onclick = function() {logMessage("test");};
+            iDiv.onclick = function() {markCardAsSelected(iDiv.id);};
 
             //set class
             iDiv.className = 'card';
@@ -81,7 +80,7 @@ function logMessage(){
   console.log(messageData);
 }
 
-function logMessage(msg){
+function logMessage2(msg){
   console.log(msg);
 }
 
@@ -89,7 +88,7 @@ function logMessage(msg){
 function markCardAsSelected(card) {
 
     //send server message card was selected
-    conn.send(card);
+    buildCardJSON(card);
     //grab all elements with Card class
     var cardsArray = document.getElementsByClassName("card");
     //remove highlight from all cards
@@ -98,8 +97,18 @@ function markCardAsSelected(card) {
         element.style.boxShadow = "0px 0px 0px lightblue";
 };
     //add highlight to current card
-    cardsArray[card].style.boxShadow = "10px 20px 30px lightgreen";
+    document.getElementById(card).style.boxShadow = "5px 5px 5px lightgreen";
 
+}
+
+// build JSON object for card user selects
+
+function buildCardJSON (card) {
+   var cardObject = {};
+   cardObject.msg = 3;
+   cardObject.card = card;
+   cardObject = JSON.stringify(cardObject);
+   conn.send(cardObject);
 }
 
 // misc JS for manipulating page
@@ -109,7 +118,7 @@ $(window).on('load',function(){
     $('#myModal').modal('show');
 });
 
-// updates UserName, based on entry from modal
+// updates UserName, based on entry from modal - UI only
 function sendUserName(){
   var playerName_UIOnly = $('#user_name_ui').val();
   document.getElementById('user_name_ui_show').innerHTML = playerName_UIOnly;

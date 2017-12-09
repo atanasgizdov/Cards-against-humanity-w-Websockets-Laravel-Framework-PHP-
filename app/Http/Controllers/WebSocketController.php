@@ -25,7 +25,7 @@ class WebSocketController implements MessageComponentInterface {
   }
 
   //TODO add an array to track cards already played so it doens't return the same ones when user draws
-  
+
   //TODO expand interface to feature multiple rooms and id's
 
   /* Dictionary for all commands coming from the websocket as a message
@@ -54,17 +54,33 @@ class WebSocketController implements MessageComponentInterface {
        // Do we have a username for this user yet? New players won't so first message received sets this
        if (isset($this->connectedUsersNames[$from->resourceId])) {
            // If we do, build JSON based on request
+           dump($msg);
 
-           // receieve msg code 1 - request for list of current players - this is based on current objects
-           if ($msg == 1){
-              $this->sendListOfPlayers($from);
+           try {
+             $msg = json_decode($msg);
+             dump($msg);
+
+               // receieve msg code 1 - request for list of current players - this is based on current objects
+               if ($msg->msg == 1){
+                 $this->sendListOfPlayers($from);
+               }
+
+                // player wants to draw white cards
+
+               if ($msg->msg == 2) {
+                  $this->sendListOfWhiteCards($from);
+               }
+
+
+               if ($msg->msg == 3) {
+                dump($msg->card);
+               }
+
             }
 
-            // player wants to draw white cards
-
-           if ($msg == 2) {
-              $this->sendListOfWhiteCards($from);
-           }
+           catch (Exception $e) {
+             dump("There was an error parsing the JSON passed");
+ }
 
 
            //$this->buildBulkMessage($from, $msg);
@@ -110,7 +126,6 @@ private function buildSingleMessage ($from, $msg) {
   $this->logs[] = array(
       "user" => $this->connectedUsersNames[$from->resourceId],
       "msg" => $msg,
-      "queryresult" => $this->dbResults($msg),
       "timestamp" => time()
   );
   $this->sendSingleMessage($from, end($this->logs));
@@ -131,7 +146,6 @@ private function buildSingleMessage ($from, $msg) {
    $this->logs[] = array(
        "user" => $this->connectedUsersNames[$from->resourceId],
        "msg" => $msg,
-       "queryresult" => $this->dbResults($msg),
        "timestamp" => time()
    );
    $this->sendBulkMessage(end($this->logs));
@@ -171,13 +185,6 @@ private function buildSingleMessage ($from, $msg) {
     );
     $this->sendSingleMessage($from, end($this->logs));
   }
-
-
-// query database for card info, based on the id passed from JS - usually on card click
-  private function dbResults($message) {
-          $query = DB::table('cards')->where('card_id', $message)->first();
-          return $query;
-      }
 
 
 

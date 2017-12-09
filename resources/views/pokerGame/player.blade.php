@@ -30,7 +30,7 @@
 <h2> Welcome to the game <span id = "user_name_ui_show"> </span></h2>
 <br>
 
-<button type="button" class="btn btn-primary btn-sm" onclick="conn.send(2)">
+<button type="button" class="btn btn-primary btn-sm" onclick="conn.send('{&quot;msg&quot; :2}')">
   Draw my White Cards
 </button>
 
@@ -44,6 +44,19 @@
 <br>
 
 <div class="black_cards">
+
+  <div class="card simple image">
+    <div class="card-image">
+        <img src="https://pbs.twimg.com/profile_images/923599161940955136/KtK4rkf1.jpg" alt="">
+    </div>
+    <div class="card-text">
+          Test   Test   Test   Test   Test   Test   Test   Test
+    </div>
+
+    <div class="card-subtitle">
+        From the author: Biily
+    </div>
+</div>
 
 </div>
 

@@ -54,7 +54,7 @@ private function generateRandomCards () {
   $randomCards = DB::table('cards')
             ->join('cards_cardtypes', 'cards.id', '=', 'cards_cardtypes.cards_id')
             ->join('cardtypes', 'cardtypes.id', '=', 'cards_cardtypes.cardtypes_id')
-            ->select('cards_id','title', 'text' , 'active')
+            ->select('cards_id','title', 'text' , 'active', 'custom_card')
             ->where('cardtypes_id', '1')
             ->inRandomOrder()
             ->limit(5)

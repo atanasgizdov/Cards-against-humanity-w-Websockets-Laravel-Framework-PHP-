@@ -13,6 +13,8 @@ class CreateCardsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('cards');
+
         Schema::create('cards', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
@@ -21,6 +23,7 @@ class CreateCardsTable extends Migration
             $table->bigInteger('times_played_lifetime');
             $table->bigInteger('times_voted_for_lifetime');
             $table->integer('active');
+            $table->integer('custom_card');
         });
     }
 
