@@ -105,8 +105,40 @@ function markCardAsSelected(card) {
 
 function buildCardJSON (card) {
    var cardObject = {};
-   cardObject.msg = 3;
+   cardObject.msg = 5;
    cardObject.card = card;
+   cardObject = JSON.stringify(cardObject);
+   conn.send(cardObject);
+}
+
+// build JSON object for card user selects (creating a card)
+
+function createCardJSON () {
+   conn.send("create_card_user");
+   var cardObject = {};
+   cardObject.msg = 4;
+   var cardText = $('#createCard');
+   cardObject.cardText = cardText.val();
+   cardObject = JSON.stringify(cardObject);
+   conn.send(cardObject);
+}
+
+function deleteCardJSON () {
+   conn.send("delete_card_user");
+   var cardObject = {};
+   cardObject.msg = 3;
+   var cardID = $('#deleteCard');
+   cardObject.cardID = cardID.val();
+   cardObject = JSON.stringify(cardObject);
+   conn.send(cardObject);
+}
+
+function deleteCardJSON2 () {
+   conn.send("delete_card_user");
+   var cardObject = {};
+   cardObject.msg = 5;
+   var cardID = $('#deleteCard');
+   cardObject.cardID = cardID.val();
    cardObject = JSON.stringify(cardObject);
    conn.send(cardObject);
 }

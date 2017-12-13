@@ -18,12 +18,12 @@ class CreateCardsTable extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->string('title');
+            $table->string('title')->default("N/A");
             $table->string('text');
-            $table->bigInteger('times_played_lifetime');
-            $table->bigInteger('times_voted_for_lifetime');
-            $table->integer('active');
-            $table->integer('custom_card');
+            $table->bigInteger('times_played_lifetime')->default(0);
+            $table->bigInteger('times_voted_for_lifetime')->default(0);
+            $table->integer('active')->default(1);
+            $table->integer('custom_card')->default(1);
         });
     }
 

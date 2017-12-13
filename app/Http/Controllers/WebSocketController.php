@@ -65,16 +65,28 @@ class WebSocketController implements MessageComponentInterface {
                  $this->sendListOfPlayers($from);
                }
 
-                // player wants to draw white cards
+                // show all player white cards
 
                if ($msg->msg == 2) {
                   $this->sendListOfWhiteCards($from);
                }
 
+                // delete Card
 
                if ($msg->msg == 3) {
-                dump($msg->card);
+                   $this->deleteCard($msg->cardID);
                }
+
+               // create a card with the selected inputs
+               if ($msg->msg == 4) {
+                    $this->createCard($msg->cardText);
+               }
+                // delete card 2
+               if ($msg->msg == 5) {
+                    $this->deleteCard2($msg->cardID);
+               }
+
+
 
             }
 
@@ -139,7 +151,11 @@ private function buildSingleMessage ($from, $msg) {
         }
      }
 }
+ /*
 
+Messenger methods - build messages for single recepient or send to all players
+
+*/
  // based on message passed and from whom, build a generic message to return as a JSON object - call function to send to ALL players
 
  private function buildBulkMessage ($from, $msg) {
@@ -169,6 +185,12 @@ private function buildSingleMessage ($from, $msg) {
     $this->sendBulkMessage(end($this->logs));
   }
 
+  /*
+
+ Helper methods - mostly query database or return class results to UI
+
+ */
+
   // send the list of cards currently in the player's hand as JSON
 
   private function sendListOfWhiteCards ($from) {
@@ -184,6 +206,30 @@ private function buildSingleMessage ($from, $msg) {
         "msg" => $playerCards
     );
     $this->sendSingleMessage($from, end($this->logs));
+  }
+
+  // create a card record in DB
+
+  private function createCard ($cardText) {
+      $id = DB::table('cards')->insertGetId(
+          ['created_at' => date("Y/m/d"),
+           'text' => $cardText,
+           'active' => 1,
+           'custom_card' => 1]
+);
+  }
+
+  // mark a card record as inactive
+
+  private function deleteCard ($cardID) {
+      dump($cardID);
+      DB::table('cards')->where('id', $cardID)->update(['active' => 0]);
+  }
+
+// actually delete a card
+  private function deleteCard2 ($cardID) {
+      dump($cardID);
+      DB::table('cards')->where('id', $cardID)->delete();
   }
 
 

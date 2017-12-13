@@ -40,7 +40,7 @@
             </li>
           </ul>
         </nav>
-        <h3 class="text-muted">Atanas Planning Poker</h3>
+        <h3 class="text-muted">Atanas CAH Game</h3>
       </div>
 
     <!-- Page Content -->

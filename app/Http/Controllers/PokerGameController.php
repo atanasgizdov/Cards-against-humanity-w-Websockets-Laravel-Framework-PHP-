@@ -16,12 +16,19 @@ public function createGameView(){
   return view ('pokerGame/create');
 }
 
-public function startGame(Request $request){
+public function createCard(){
 
-  $title = $request->input('title');
-  // To be used when first firing up the Web Server. Once it's spinning, this can be commented out
+  return view ('pokerGame/create_card');
+}
+
+public function deleteCard(){
+
+  return view ('pokerGame/delete_card');
+}
+
+public function startGame(){
+
   include('ChatServer.php');
-  return view ('pokerGame/admin');
 
 }
 

@@ -26,7 +26,11 @@ Route::get('/', 'PokerGameController@show');
 
 Route::get('/create', 'PokerGameController@createGameView');
 
-Route::post('/play', 'PokerGameController@startGame');
+Route::get('/play', 'PokerGameController@startGame');
+
+Route::get('/create_card', 'PokerGameController@createCard');
+
+Route::get('/delete_card', 'PokerGameController@deleteCard');
 
 Route::post('/enterName', 'PokerGameController@enterName');
 

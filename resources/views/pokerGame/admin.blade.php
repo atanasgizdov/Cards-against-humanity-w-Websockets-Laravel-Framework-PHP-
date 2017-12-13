@@ -11,6 +11,10 @@
 
 <div class="cards">
 
+  <button type="button" class="btn btn-primary btn-sm" onclick="conn.send('{&quot;msg&quot; :1}')">
+    Start game
+  </button>
+
 </div>
 
 @endsection
