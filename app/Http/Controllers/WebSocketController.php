@@ -15,6 +15,7 @@ class WebSocketController implements MessageComponentInterface {
     private $connectedUsers;
     private $connectedUsersNames;
     private $connectedUsersObjects;
+    private $currentPlayer;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
@@ -28,12 +29,20 @@ class WebSocketController implements MessageComponentInterface {
 
   //TODO expand interface to feature multiple rooms and id's
 
-  /* Dictionary for all commands coming from the websocket as a message
+  /*
 
-  1 - Request for List of Players
-  2 - Request white cards for player
+ Dictionary for requests and their responses
+ ******************************************************************************
 
-  */
+ */
+
+
+  /*
+
+ Socket Methods - do something onOpen, onMessage and onClose
+ ******************************************************************************
+
+ */
 
   public function onOpen(ConnectionInterface $conn) {
       // Store the new connection to send messages to later
@@ -132,6 +141,32 @@ class WebSocketController implements MessageComponentInterface {
       $conn->close();
   }
 
+  /*
+
+ Game Loop - create the game loop and logic
+ ******************************************************************************
+
+ */
+
+private function whoseTurnIsIt () {
+  
+}
+
+private function updateUserTurn () {
+ foreach ($this->connectedUsers as $user) {
+     $user->send(json_encode($message));
+   }
+}
+
+
+
+
+  /*
+
+ Messenger methods - build messages for single recepient or send to all players
+ ******************************************************************************
+
+ */
 // based on message passed and from whom, build a generic message to return as a JSON object - call function to send to single player
 
 private function buildSingleMessage ($from, $msg) {
@@ -151,11 +186,6 @@ private function buildSingleMessage ($from, $msg) {
         }
      }
 }
- /*
-
-Messenger methods - build messages for single recepient or send to all players
-
-*/
  // based on message passed and from whom, build a generic message to return as a JSON object - call function to send to ALL players
 
  private function buildBulkMessage ($from, $msg) {
@@ -174,6 +204,13 @@ Messenger methods - build messages for single recepient or send to all players
          }
      }
 
+ /*
+
+Player methods - manipulate and send Player objects
+******************************************************************************
+
+*/
+
   // send list of current players
 
   private function sendListOfPlayers ($from) {
@@ -187,7 +224,8 @@ Messenger methods - build messages for single recepient or send to all players
 
   /*
 
- Helper methods - mostly query database or return class results to UI
+ Card methods - manipulate and send card objects
+ ******************************************************************************
 
  */
 
@@ -208,6 +246,7 @@ Messenger methods - build messages for single recepient or send to all players
     $this->sendSingleMessage($from, end($this->logs));
   }
 
+
   // create a card record in DB
 
   private function createCard ($cardText) {
@@ -224,12 +263,6 @@ Messenger methods - build messages for single recepient or send to all players
   private function deleteCard ($cardID) {
       dump($cardID);
       DB::table('cards')->where('id', $cardID)->update(['active' => 0]);
-  }
-
-// actually delete a card
-  private function deleteCard2 ($cardID) {
-      dump($cardID);
-      DB::table('cards')->where('id', $cardID)->delete();
   }
 
 

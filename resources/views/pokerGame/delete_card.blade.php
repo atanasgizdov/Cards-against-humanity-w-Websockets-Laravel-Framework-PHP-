@@ -34,10 +34,6 @@
   Save
 </button>
 
-<button type="button" class="btn btn-primary btn-sm" onclick="deleteCardJSON2()">
-  Completely destroy (deletes)
-</button>
-
 <br>
 
 <br>

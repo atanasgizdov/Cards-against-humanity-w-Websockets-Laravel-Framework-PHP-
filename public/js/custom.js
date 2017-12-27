@@ -4,7 +4,6 @@ var conn = new WebSocket('ws://localhost:8080');
 
 var playersConnected;
 var messageData;
-var nameSet = false;
 
 //set on connect actions
 conn.onopen = function(e) {
@@ -14,21 +13,45 @@ console.log("Connection established!");
 //on message received - driven by "response codes" sent back from server
 conn.onmessage = function(e) {
 messageData = JSON.parse(e.data);
-    // received a list of players currently in the game
+
+
+    // received a list of players
     if (messageData.response_code == "1"){
-    logMessage();
+		logMessage();
 
-        Object.keys(messageData.msg).forEach(function(k){
-            var iDiv = document.createElement('div');
-            iDiv.id = k;
-            iDiv.className = 'card';
-            document.getElementsByClassName('cards')[0].appendChild(iDiv);
+      // destroy existing dom cards, if any
+      removeChildren (document.getElementsByClassName('current_players')[0]);
 
-            iDiv.innerHTML = "Another scrub has joined the game: <br>" + messageData.msg[k];
+          // for each card object returned
+				 Object.keys(messageData['msg']).forEach(function(k){
 
-        });
+           // create dom elements for each card
+            var linebreak = document.createElement("br");
+						var iDiv = document.createElement('div');
+            var iDiv2 = document.createElement('div');
+            var card_img = document.createElement("img");
 
-    }
+            //set id's for card div - this is the ID of the card rendered
+						iDiv.id = messageData['msg'][k];
+
+
+            //set class
+            iDiv.className = 'card simple image';
+            iDiv2.className = 'card-text'
+            card_img.className = 'card-image';
+
+            //set content
+            card_img.setAttribute("src", "https://pbs.twimg.com/profile_images/923599161940955136/KtK4rkf1.jpg");
+            iDiv2.innerHTML = messageData['msg'][k];
+
+            iDiv.appendChild(card_img);
+            iDiv.appendChild(iDiv2);
+            document.getElementsByClassName('current_players')[0].appendChild(iDiv);
+            document.getElementsByClassName('current_players')[0].appendChild(linebreak);
+
+				});
+
+		}
 
     // received a list of white cards - unique to this player
 		if (messageData.response_code == "2"){
@@ -43,7 +66,7 @@ messageData = JSON.parse(e.data);
            // create dom elements for each card
             var linebreak = document.createElement("br");
 						var iDiv = document.createElement('div');
-            var iDiv2 = document.createElement('div');
+
             var iDiv3 = document.createElement('div');
             var card_img = document.createElement("img");
 
@@ -56,17 +79,18 @@ messageData = JSON.parse(e.data);
             iDiv.onclick = function() {markCardAsSelected(iDiv.id);};
 
             //set class
-            iDiv.className = 'card';
-            card_img.className = 'card';
+            iDiv.className = 'card simple image';
+            iDiv3.className = 'card-text'
+            card_img.className = 'card-image';
 
             //set content
             card_img.setAttribute("src", "https://pbs.twimg.com/profile_images/923599161940955136/KtK4rkf1.jpg");
-            iDiv2.innerHTML = messageData['msg'][k]['title'];
+
             iDiv3.innerHTML = messageData['msg'][k]['text'];
 
             iDiv.appendChild(card_img);
-            iDiv2.appendChild(iDiv3);
-            iDiv.appendChild(iDiv2);
+            iDiv.appendChild(iDiv3);
+
             document.getElementsByClassName('cards')[0].appendChild(iDiv);
             document.getElementsByClassName('cards')[0].appendChild(linebreak);
 
@@ -101,14 +125,27 @@ function markCardAsSelected(card) {
 
 }
 
-// build JSON object for card user selects
+/*
 
-function buildCardJSON (card) {
+build JSON requests to send to WebSocket
+******************************************************************************
+
+*/
+
+function buildGenericJSON (msg){
+    var cardObject = {};
+    cardObject.msg = msg;
+    cardObject = JSON.stringify(cardObject);
+    conn.send(cardObject);
+}
+
+// build a JSON object on card selected
+function buildCardJSON (card, msg) {
    var cardObject = {};
-   cardObject.msg = 5;
+   cardObject.msg = msg;
    cardObject.card = card;
    cardObject = JSON.stringify(cardObject);
-   conn.send(cardObject);
+   console.log(cardObject);
 }
 
 // build JSON object for card user selects (creating a card)
@@ -132,17 +169,6 @@ function deleteCardJSON () {
    cardObject = JSON.stringify(cardObject);
    conn.send(cardObject);
 }
-
-function deleteCardJSON2 () {
-   conn.send("delete_card_user");
-   var cardObject = {};
-   cardObject.msg = 5;
-   var cardID = $('#deleteCard');
-   cardObject.cardID = cardID.val();
-   cardObject = JSON.stringify(cardObject);
-   conn.send(cardObject);
-}
-
 // misc JS for manipulating page
 
 // load modal on load so that player enters name
@@ -155,7 +181,8 @@ function sendUserName(){
   var playerName_UIOnly = $('#user_name_ui').val();
   document.getElementById('user_name_ui_show').innerHTML = playerName_UIOnly;
   conn.send(playerName_UIOnly);
-  nameSet = true;
+  buildGenericJSON("1");
+
 }
 
 // remove children nodes from current element
