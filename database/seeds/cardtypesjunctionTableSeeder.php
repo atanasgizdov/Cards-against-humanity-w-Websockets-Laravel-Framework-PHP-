@@ -21,7 +21,12 @@ class cardtypesjunctionTableSeeder extends Seeder
         'Test title 2' => ['white'],
         'Test title 3' => ['white'],
         'Test title 4' => ['white'],
-        'Test title 5' => ['black']
+        'Test title 5' => ['white'],
+        'Test title 1-Black' => ['black'],
+        'Test title 2-Black' => ['black'],
+        'Test title 3-Black' => ['black'],
+        'Test title 4-Black' => ['black'],
+        'Test title 5-Black' => ['black']
     ];
 
     # Now loop through the above array, creating a new pivot for each book to tag

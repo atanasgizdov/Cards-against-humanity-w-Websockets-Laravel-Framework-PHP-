@@ -29,6 +29,13 @@
 
 <h2> Welcome to the game <span id = "user_name_ui_show"> </span></h2>
 <br>
+<h3 id = "my_turn" style="display: none;"> It's your Turn! </h3>
+<h4 id = "my_turn2" style="display: none;"> Click on the button below to draw your black card </h4>
+<br>
+
+<button type="button" style="display: none;" id = "draw_black_cards" class="btn btn-primary btn-sm" onclick="conn.send('{&quot;msg&quot; :4}')">
+  Draw my Black Card
+</button>
 
 <button type="button" id = "draw_white_cards" class="btn btn-primary btn-sm" onclick="conn.send('{&quot;msg&quot; :2}')">
   Draw my White Cards

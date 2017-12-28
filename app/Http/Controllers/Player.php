@@ -12,11 +12,12 @@ class Player extends Controller
   private $playerCards = [];
   private $blackCardsWon = [];
   private $userName;
+  private $currentBlackCard = [];
 
   public function __construct($id) {
       $this->playerId = $id;
       $this->generateRandomCards();
-      $this->blackCardsWon = [];
+      $this->getABlackCardFromDeck();
 
 }
 
@@ -40,7 +41,27 @@ public function getPlayerWhiteCards () {
   return $this->playerCards;
 }
 
-public function getPlayerBlackCards() {
+public function getPlayerCurrentBlackCard () {
+  return $this->$currentBlackCard;
+
+}
+
+public function getABlackCardFromDeck () {
+  $blackCard = DB::table('cards')
+            ->join('cards_cardtypes', 'cards.id', '=', 'cards_cardtypes.cards_id')
+            ->join('cardtypes', 'cardtypes.id', '=', 'cards_cardtypes.cardtypes_id')
+            ->select('cards_id','title', 'text' , 'active', 'custom_card')
+            ->where('cardtypes_id', '2')
+            ->inRandomOrder()
+            ->limit(1)
+            ->get();
+
+         array_push($this->currentBlackCard, $blackCard);
+
+}
+
+
+public function getPlayerBlackCardsWon() {
   return $this->blackCardsWon;
 }
 

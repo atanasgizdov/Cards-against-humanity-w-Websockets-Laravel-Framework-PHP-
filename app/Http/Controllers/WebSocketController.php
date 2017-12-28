@@ -15,7 +15,8 @@ class WebSocketController implements MessageComponentInterface {
     private $connectedUsers;
     private $connectedUsersNames;
     private $connectedUsersObjects;
-    private $currentPlayer;
+    private $whoseTurn;
+    private $whoHasTakenTheirTurn;
 
   public function __construct() {
       $this->clients = new \SplObjectStorage;
@@ -23,6 +24,7 @@ class WebSocketController implements MessageComponentInterface {
       $this->connectedUsers = [];
       $this->connectedUsersNames = [];
       $this->connectedUsersObjects = [];
+      $this->whoHasTakenTheirTurn = [];
   }
 
   //TODO add an array to track cards already played so it doens't return the same ones when user draws
@@ -73,27 +75,35 @@ class WebSocketController implements MessageComponentInterface {
                if ($msg->msg == 1){
                  $this->sendListOfPlayers($from);
                }
-
                 // show all player white cards
-
                if ($msg->msg == 2) {
                   $this->sendListOfWhiteCards($from);
                }
+               //admin clicks start game
+               if ($msg->msg == 3) {
+                   $this->progressGame();
+                   $this->sendWhoseTurn();
+                   $this->sendBlackCard ($from);
+               }
+              // user who just went wants next turn
+               if ($msg->msg == 4) {
+                  sendWhoseTurn();
+                  sendBlackCard ();
+               }
 
+
+               /*
                 // delete Card
 
-               if ($msg->msg == 3) {
+               if ($msg->msg == x) {
                    $this->deleteCard($msg->cardID);
                }
 
                // create a card with the selected inputs
-               if ($msg->msg == 4) {
+               if ($msg->msg == x) {
                     $this->createCard($msg->cardText);
                }
-                // delete card 2
-               if ($msg->msg == 5) {
-                    $this->deleteCard2($msg->cardID);
-               }
+               */
 
 
 
@@ -148,18 +158,29 @@ class WebSocketController implements MessageComponentInterface {
 
  */
 
-private function whoseTurnIsIt () {
-  
-}
+ private function progressGame () {
+    $playerSelected = false;
+    $whoseTurn = array_rand($this->connectedUsers);
+    dump($whoseTurn);
 
-private function updateUserTurn () {
- foreach ($this->connectedUsers as $user) {
-     $user->send(json_encode($message));
-   }
-}
+    while ($playerSelected == false) {
+      if (count($this->whoHasTakenTheirTurn) == count ($this->connectedUsers)){
+          $this->whoHasTakenTheirTurn = [];
+        }
+      if (in_array($whoseTurn, $this->whoHasTakenTheirTurn)) {
+          $whoseTurn = array_rand($this->connectedUsers);
+       }
+      else {
+         $this->whoseTurn = $whoseTurn;
+         array_push($this->whoHasTakenTheirTurn, $whoseTurn);
+         dump($this->whoseTurn);
+         dump($this->whoHasTakenTheirTurn);
+         $playerSelected = true;
 
+          }
+    }
 
-
+ }
 
   /*
 
@@ -222,6 +243,16 @@ Player methods - manipulate and send Player objects
     $this->sendBulkMessage(end($this->logs));
   }
 
+  private function sendWhoseTurn () {
+    $this->logs[] = array(
+        "response_code" => "4",
+        "msg" => $this->whoseTurn
+    );
+
+    $this->sendBulkMessage(end($this->logs));
+  }
+
+
   /*
 
  Card methods - manipulate and send card objects
@@ -245,6 +276,27 @@ Player methods - manipulate and send Player objects
     );
     $this->sendSingleMessage($from, end($this->logs));
   }
+
+  private function sendBlackCard () {
+    $playerCards;
+    foreach ($this->connectedUsersObjects as $user) {
+        if ($user->getPlayerId() == $this->whoseTurn ) {
+            $playerCards = $user->getPlayerCurrentBlackCard();
+        }
+    }
+
+    $this->logs[] = array(
+        "response_code" => "3",
+        "msg" => $playerCards
+    );
+
+    foreach ($this->connectedUsers as $user) {
+        if ($whoseTurn == $user->resourceId) {
+            $from = $user;
+        }
+    $this->sendSingleMessage($from, end($this->logs));
+  }
+}
 
 
   // create a card record in DB

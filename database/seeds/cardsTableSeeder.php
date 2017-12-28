@@ -18,7 +18,12 @@ class cardsTableSeeder extends Seeder
       ['Test title 2', 'test body 2', 0, 0, 1, 1],
       ['Test title 3', 'test body 3', 0, 0, 1, 1],
       ['Test title 4', 'test body 4', 0, 0, 1, 1],
-      ['Test title 5', 'test body 5', 0, 0, 1, 1]
+      ['Test title 5', 'test body 5', 0, 0, 1, 1],
+      ['Test title 1-Black', 'test body 1', 0, 0, 1, 1],
+      ['Test title 2-Black', 'test body 2', 0, 0, 1, 1],
+      ['Test title 3-Black', 'test body 3', 0, 0, 1, 1],
+      ['Test title 4-Black', 'test body 4', 0, 0, 1, 1],
+      ['Test title 5-Black', 'test body 5', 0, 0, 1, 1]
   ];
 
   $count = count($cards);

@@ -12,6 +12,7 @@
   <p><a class="btn btn-lg btn-success" href="create" role="button">Join the Game</a></p>
   <p><a href="create_card" >Create a card</p>
   <p><a href="delete_card" >Delete existing cards</p>
+  <p><a href="admin" >Join as an Admin</p>
   <p><a href="play" >Start the game server</p>
 </div>
 @endsection

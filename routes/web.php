@@ -36,7 +36,7 @@ Route::post('/enterName', 'PokerGameController@enterName');
 
 Route::post('/join', 'PokerGameController@joinGame');
 
-Route::post('/admin', 'PokerGameController@admin');
+Route::get('/admin', 'PokerGameController@admin');
 
 
 

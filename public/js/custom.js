@@ -97,6 +97,16 @@ messageData = JSON.parse(e.data);
 				});
 
 		}
+
+    if (messageData.response_code == "3"){
+        myTurn();
+    }
+
+    if (messageData.response_code == "4"){
+        endOfMyTurn(messageData);
+
+
+    }
 };
 
 //debuggers
@@ -123,6 +133,31 @@ function markCardAsSelected(card) {
     //add highlight to current card
     document.getElementById(card).style.boxShadow = "5px 5px 5px lightgreen";
 
+}
+
+
+/*
+
+Game
+******************************************************************************
+
+*/
+
+function myTurn (){
+    document.getElementById('draw_black_cards').style.display = 'block';
+    document.getElementById('draw_white_cards').style.display = 'none';
+    document.getElementById('my_turn').style.display = 'block';
+    document.getElementById('my_turn').style.display = 'block';
+    document.body.style.backgroundColor = "#555";
+}
+
+function endOfMyTurn (messageData){
+  document.getElementById('draw_black_cards').style.display = 'none';
+  document.getElementById('draw_white_cards').style.display = 'block';
+  document.getElementById('my_turn').style.display = 'block';
+  document.getElementById('my_turn').innerHTML = messageData['msg'];
+  document.getElementById('my_turn').style.display = 'none';
+  document.body.style.backgroundColor = "#fff";
 }
 
 /*
